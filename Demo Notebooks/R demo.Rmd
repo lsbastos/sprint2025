@@ -34,7 +34,7 @@ py_config()
 Get your API_KEY:
 
 ```{r}
-API_KEY =  'X-UID-Key'
+API_KEY =  "lsbastos:892700ac-2b3d-4def-ae3b-7e7e86b316dd"
 ```
 
 Now it is time to install the mosqlient
@@ -54,7 +54,7 @@ the disease data.
 The dengue data is provided by week and by municipality. 
 
 ```{r, results='hide'}
-data <- fread("~/GitHub/sprint-template-2025/Demo Notebooks/dengue.csv.gz")
+data <- dengue #fread("~/GitHub/sprint-template-2025/Demo Notebooks/dengue.csv.gz")
 head(data)
 ```
 
@@ -125,9 +125,9 @@ You need your API key, to get it, see the instructions in the github readme.
 
 response = mosq$upload_model(
     api_key=API_KEY,
-    name="Prophet R Example",
-    description="test model for 2025 in R",
-    repository="https://github.com/Mosqlimate-project/sprint-template-2025/",
+    name="Beat it",
+    description="Bayesian baseline model",
+    repository="https://github.com/lsbastos/sprint2025",
     implementation_language="R",
     disease= "dengue",
     temporal= TRUE,
