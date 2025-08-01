@@ -32,32 +32,34 @@ names(list.train.1) = macros
 
 list.train.3 = list.train.2 = list.train.1
 
+
+
 #k = 1
 for(k in 1:length(macros)){
   # Training 1
-  data.train1.macro.k = dengue %>% 
-    filter(
-      macroregional_geocode == macros[k], 
-      (train_1 == T | target_1 == T)
-      # (train_2 == T | target_2 == T) 
-    ) %>% 
-    group_by(Date = date, macroregional_geocode, uf) %>% 
-    summarise(
-      cases = sum(casos),
-      train = train_1[1], target = target_1[1], .groups = "drop"
-      # train = train_2[1], target = target_2[1]
-    ) 
-  
-  data.train2.macro.k = dengue %>% 
-    filter(
-      macroregional_geocode == macros[k], 
-      (train_2 == T | target_2 == T)
-    ) %>% 
-    group_by(Date = date, macroregional_geocode, uf) %>% 
-    summarise(
-      cases = sum(casos),
-      train = train_2[1], target = target_2[1], .groups = "drop"
-    ) 
+  # data.train1.macro.k = dengue %>% 
+  #   filter(
+  #     macroregional_geocode == macros[k], 
+  #     (train_1 == T | target_1 == T)
+  #     # (train_2 == T | target_2 == T) 
+  #   ) %>% 
+  #   group_by(Date = date, macroregional_geocode, uf) %>% 
+  #   summarise(
+  #     cases = sum(casos),
+  #     train = train_1[1], target = target_1[1], .groups = "drop"
+  #     # train = train_2[1], target = target_2[1]
+  #   ) 
+  # 
+  # data.train2.macro.k = dengue %>%
+  #   filter(
+  #     macroregional_geocode == macros[k],
+  #     (train_2 == T | target_2 == T)
+  #   ) %>%
+  #   group_by(Date = date, macroregional_geocode, uf) %>%
+  #   summarise(
+  #     cases = sum(casos),
+  #     train = train_2[1], target = target_2[1], .groups = "drop"
+  #   )
   
   data.train3.macro.k = dengue %>% 
     filter(
@@ -70,31 +72,42 @@ for(k in 1:length(macros)){
       train = train_3[1], target = target_3[1], .groups = "drop"
     ) 
   
+  data.train3.macro.k = data.train3.macro.k |> 
+    bind_rows(
+      tibble(
+        Date = max(data.train3.macro.k$Date) + 7*(1:(40-22)),
+        macroregional_geocode = data.train3.macro.k$macroregional_geocode[1], 
+        uf = data.train3.macro.k$uf[1],
+        cases = NA,
+        train = FALSE,
+        target = TRUE)
+    )
   
-  # Forescasting target 1
-  aux = forecasting.inla(dados = data.train1.macro.k %>% 
-                           filter(Date >= "2015-10-11"), 
-                         MC =T)
   
-  aux$pred$uf = data.train1.macro.k$uf[1]
-  aux$pred$macrocode = data.train1.macro.k$macroregional_geocode[1]
-  
-  aux$MC$uf = data.train1.macro.k$uf[1]
-  aux$MC$macrocode = data.train1.macro.k$macroregional_geocode[1]
-  
-  list.train.1[[k]]$out <- aux
-  
-  # Forescasting target 2
-  aux2 <- forecasting.inla(dados = data.train2.macro.k %>% 
-                             filter(Date >= "2015-10-11"), 
-                           MC =T)
-  aux2$pred$uf = data.train2.macro.k$uf[1]
-  aux2$pred$macrocode = data.train2.macro.k$macroregional_geocode[1]
-  
-  aux2$MC$uf = data.train2.macro.k$uf[1]
-  aux2$MC$macrocode = data.train2.macro.k$macroregional_geocode[1]
-  
-  list.train.2[[k]]$out <- aux2
+  # # Forescasting target 1
+  # aux = forecasting.inla(dados = data.train1.macro.k %>% 
+  #                          filter(Date >= "2015-10-11"), 
+  #                        MC =T)
+  # 
+  # aux$pred$uf = data.train1.macro.k$uf[1]
+  # aux$pred$macrocode = data.train1.macro.k$macroregional_geocode[1]
+  # 
+  # aux$MC$uf = data.train1.macro.k$uf[1]
+  # aux$MC$macrocode = data.train1.macro.k$macroregional_geocode[1]
+  # 
+  # list.train.1[[k]]$out <- aux
+  # 
+  # # Forescasting target 2
+  # aux2 <- forecasting.inla(dados = data.train2.macro.k %>% 
+  #                            filter(Date >= "2015-10-11"), 
+  #                          MC =T)
+  # aux2$pred$uf = data.train2.macro.k$uf[1]
+  # aux2$pred$macrocode = data.train2.macro.k$macroregional_geocode[1]
+  # 
+  # aux2$MC$uf = data.train2.macro.k$uf[1]
+  # aux2$MC$macrocode = data.train2.macro.k$macroregional_geocode[1]
+  # 
+  # list.train.2[[k]]$out <- aux2
 
   
   # Forescasting target 3
@@ -109,7 +122,7 @@ for(k in 1:length(macros)){
   
   list.train.3[[k]]$out <- aux3
   
-  cat(k, data.train1.macro.k$uf[1] , data.train1.macro.k$macroregional_geocode[1], "\n")
+  cat(k, data.train3.macro.k$uf[1] , data.train3.macro.k$macroregional_geocode[1], "\n")
   
 }
 
