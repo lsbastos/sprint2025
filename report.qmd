@@ -1,0 +1,73 @@
+---
+title: "Forecasts by UF"
+author: "Leo Bastos"
+format: html
+editor: visual
+---
+
+```{r warning=F, message=FALSE, echo=FALSE}
+library(tidyverse)
+
+tbl.total.uf.week.train1 <- read_csv(file = "forecasts/tbl.sprint.uf.week.train1.csv")
+tbl.total.uf.week.train2 <- read_csv(file = "forecasts/tbl.sprint.uf.week.train2.csv")
+tbl.total.uf.week.train3  <- read_csv(file = "forecasts/tbl.sprint.uf.week.train3.csv")
+
+tbl.total.uf.week.train3  <- tbl.total.uf.week.train3 |> 
+  left_join(tibble(
+    date.rm = max(tbl.total.uf.week.train3$date, na.rm = T) + 7*(1:(40-22)),
+    week = 35:52),
+  by = "week") |> mutate(
+    date = if_else(is.na(date), date.rm, date)
+  ) |> select(-date.rm)
+
+```
+
+
+::: {.panel-tabset}
+
+### 2022-2023
+
+```{r }
+tbl.total.uf.week.train1 |> 
+  filter(uf == "MG") |> 
+  ggplot(aes(x = date)) + 
+  geom_ribbon(aes(ymin = lower_80, ymax = upper_80), alpha = 0.25) + 
+  geom_line(aes(y = pred, color = "Predicted")) + 
+  geom_line(aes(y = cases, , color = "Observed")) + 
+  theme_bw()
+```
+
+### 2023-2024
+
+```{r}
+tbl.total.uf.week.train2 |> 
+  filter(uf == "MG") |> 
+  ggplot(aes(x = date)) + 
+  geom_ribbon(aes(ymin = lower_80, ymax = upper_80), alpha = 0.25) + 
+  geom_line(aes(y = pred, color = "Predicted")) + 
+  geom_line(aes(y = cases, , color = "Observed")) + 
+  theme_bw()
+```
+
+### 2024-2025
+
+```{r warning=FALSE}
+tbl.total.uf.week.train3 |> 
+  filter(uf == "MG") |> 
+  ggplot(aes(x = date)) + 
+  geom_ribbon(aes(ymin = lower_80, ymax = upper_80), alpha = 0.25) + 
+  geom_line(aes(y = pred, color = "Predicted")) + 
+  geom_line(aes(y = cases, , color = "Observed")) + 
+  theme_bw()
+```
+
+:::
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).

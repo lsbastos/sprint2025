@@ -34,6 +34,6 @@ It is a negative binomial with year indpendent Gaussian random effects and a cyc
 
 The intervals were computed based on quantiles from samples of the posterior predictive distribution using a Monte Carlo approach.
 
-## References
+## Reference
 
-Freitas, Laís Picinini et al. (2025) A statistical model for forecasting probabilistic epidemic bands for dengue cases in Brazil [medrxiv](https://www.medrxiv.org/content/10.1101/2025.06.12.25329525v1)
+Freitas et al. (2025) A statistical model for forecasting probabilistic epidemic bands for dengue cases in Brazil, Infectious disease modelling ([link](https://www.sciencedirect.com/science/article/pii/S2468042725000739)) ([medrxiv](https://www.medrxiv.org/content/10.1101/2025.06.12.25329525v1))
